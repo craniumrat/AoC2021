@@ -1,0 +1,7 @@
+A solution of such an equation is a n-tuples such that substituting each element of the tuple for the corresponding 
+variable transforms the equation into a true equality.
+For an equation to be meaningful, the coefficient of at least one 
+variable must be non-zero. In fact, if every variable has a zero coefficient
+, then, as mentioned for one variable, the equation 
+is either inconsistent (for b = 0) as having no solution, or all 
+n-tuples are solutions. 
