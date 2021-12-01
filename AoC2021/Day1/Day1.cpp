@@ -13,23 +13,22 @@ namespace day1
 {
 	namespace ast
 	{
-		struct rule
+		typedef std::map<std::string, int> bag_map;
+		typedef std::pair<std::string, int> bag_pair;
+
+		struct bag
 		{
 			std::string name;
-			int min_1;
-			int max_1;
-			int min_2;
-			int max_2;
+			std::map<std::string, int> inner_bags;
+
+			bool operator == (const bag& other) const {
+				return name == other.name;
+			}
+
+			bool operator < (const bag& other) const {
+				return name < other.name;
+			}
 		};
-
-		//typedef std::map<std::string, int> bag_map;
-		//typedef std::pair<std::string, int> bag_pair;
-
-		//struct bag
-		//{
-		//	std::string name;
-		//	bag_map bags;
-		//};
 
 		using boost::fusion::operator<<;
 	}
@@ -44,30 +43,30 @@ namespace day1
 		using x3::lit;
 		using x3::lexeme;
 
-		x3::rule<class rule, day1::ast::rule> const rule = "rule";
 
-		auto const rule_def =
-			lexeme [+(char_ - ':') >> ':']
-			>> int_ >> '-' >> int_
-			>> "or"
-			>> int_ >> '-' >> int_;
+		x3::rule<class adjective, std::string> adjective = "adjective";
+		x3::rule<class color, std::string> color = "color";
+		auto const adjective_def = +char_;
+		auto const color_def = +char_;
 
-		BOOST_SPIRIT_DEFINE(rule)
+		x3::rule<class desc, std::string> desc = "desc";
+		auto const desc_def = adjective >> color;
 
-		//x3::rule<class bag, day1::ast::bag> const bag = "bag";
+		x3::rule<class inner_bag, std::pair<int, std::string>> inner_bag = "inner_bag";
+		auto const inner_bag_def = int_ >> desc >> "bag" >> *"s";
 
-		//auto const adjective = +char_;
-		//auto const color = +char_;
+		x3::rule<class outer_bag, std::string> outer_bag = "outer_bag";
+		auto const outer_bag_def = desc >> "bags";
 
-		//auto const desc = adjective >> color;
-		//auto const inner_bag = int_ >> desc >> "bag" >> *"s";
-		//auto const outer_bag = desc >> "bags";
-		//auto const inner_bags = inner_bag % ',';
-		//auto const no_other_bags = lit("no other bags");
-		//
-		//auto const bag_def = outer_bag >> "contain" >> (inner_bags | no_other_bags);
+		//x3::rule<class inner_bags, std::vector<std::pair<int, std::string>>> inner_bags = "inner_bags";
+		x3::rule<class inner_bags, std::vector<std::pair<int, std::string>>> inner_bags = "inner_bags";
+		auto const inner_bags_def = inner_bag % ',';
 
-		//BOOST_SPIRIT_DEFINE(bag)
+		auto const no_other_bags = lit("no other bags");		
+		x3::rule<class bag, day1::ast::bag> const bag = "bag";
+		auto const bag_def = outer_bag >> "contain" >> (inner_bags | no_other_bags);
+
+		BOOST_SPIRIT_DEFINE(adjective, color, desc, inner_bag, outer_bag, inner_bags, bag)
 
 		//template<typename Iterator>
 		//bool parse_inner_bag(Iterator first, Iterator last, std::unordered_map<std::string, int>& inners)
@@ -90,16 +89,14 @@ namespace day1
 	}
 }
 
-BOOST_FUSION_ADAPT_STRUCT(day1::ast::rule, name, min_1, max_1, min_2, max_2)
-//BOOST_FUSION_ADAPT_STRUCT(day1::ast::bag,
-//	name,
-//	(day1::ast::bag_map, bags)
-//)
+BOOST_FUSION_ADAPT_STRUCT(day1::ast::bag,
+	name,
+	(day1::ast::bag_map, bags)
+)
 
 int main()
 {
-	std::vector <day1::ast::rule> rules;
-	//std::vector<day1::ast::bag> bags;
+	std::vector<day1::ast::bag> bags;
 
 	path inputFile(L"input.txt");
 
@@ -113,25 +110,21 @@ int main()
 		iterator_type iter = line.begin();
 		iterator_type const end = line.end();
 
-		day1::ast::rule rule;
-		//day1::ast::bag bag;
+		day1::ast::bag bag;
 		std::cout << line << std::endl;
 
-		bool result = phrase_parse(iter, end, day1::parser::rule, space, rule);
-		//bool result = phrase_parse(iter, end, day1::parser::bag, space, bag);
+		bool result = phrase_parse(iter, end, day1::parser::bag, space, bag);
 		if (result && iter == end)
 		{
 			std::cout << "-------------------------\n";
 			std::cout << "Parsing succeeded\n";
-			std::cout << "got: " << rule.name << ": " << rule.min_1 << "-" << rule.max_1 << " " << rule.min_2 << "-" << rule.max_2 << std::endl;
-			//std::cout << "got: " << bag.name;
-			//for (auto&& b: bag.bags)
-			//{
-			//	std::cout << " " << b.first << ": " << b.second << std::endl;
-			//}
-			//std::cout << "\n-------------------------\n";
-			rules.push_back(rule);
-			//bags.push_back(bag);
+			std::cout << "got: " << bag.name;
+			for (auto&& b: bag.inner_bags)
+			{
+				std::cout << " " << b.first << ": " << b.second << std::endl;
+			}
+			std::cout << "\n-------------------------\n";
+			bags.push_back(bag);
 		}
 		else
 		{
