@@ -38,15 +38,17 @@ fn main() {
                         Rule::instruction => (),
                    }
 
-                   update_position(&mut x, &mut y, direction, amount);
+                   update_position_part1(&mut x, &mut y, direction, amount);
                    println!("x: {}, y: {}", x, y);
                 }
             }
         }
     }
+
+    println!("{}", x * y);
 }
 
-fn update_position(x: &mut i32, y: &mut i32, direction: &str, amount: i32)
+fn update_position_part1(x: &mut i32, y: &mut i32, direction: &str, amount: i32)
 {
     println!("x: {}, y: {}, direction: {}, amount: {}", x, y, direction, amount);
     match direction {
