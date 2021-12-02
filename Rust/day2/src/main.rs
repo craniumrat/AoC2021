@@ -19,19 +19,23 @@ fn main() {
     if let Ok(lines) = read_lines("test.txt") {
         for line in lines {
             if let Ok(value) = line {
+                println!("{}", value);
                 let instruction = Directions::parse(Rule::instruction, &value).expect("Unexpected parse").next().unwrap();
-                for record in instruction.into_inner()
+                let mut amount = 0;
+                let mut direction = "";
+                for entry in instruction.into_inner()
                 {
-                    let mut amount = 0;
-                    let mut direction = "";
-                    match record.as_rule() {
+                    match entry.as_rule() {
                         Rule::direction => {
-                            direction = record.as_str();
+                            println!("Record value: {}", entry.as_str());
+                            direction = entry.as_str();
                         },
                         Rule::value => {
-                            amount = record.as_str().parse::<i32>().unwrap();
+                            println!("Record value: {}", entry.as_str());
+                            amount = entry.as_str().parse::<i32>().unwrap();
                         },
-                        _ => { unreachable!(); }
+                        Rule::WHITESPACE => (),
+                        Rule::instruction => (),
                    }
 
                    update_position(&mut x, &mut y, direction, amount);
@@ -44,6 +48,7 @@ fn main() {
 
 fn update_position(x: &mut i32, y: &mut i32, direction: &str, amount: i32)
 {
+    println!("x: {}, y: {}, direction: {}, amount: {}", x, y, direction, amount);
     match direction {
         "forward" => {
             *x += amount;
