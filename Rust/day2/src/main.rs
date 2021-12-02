@@ -15,6 +15,7 @@ fn main() {
 
     let mut x: i32 = 0;
     let mut y: i32 = 0;
+    let mut aim: i32 = 0;
 
     if let Ok(lines) = read_lines("test.txt") {
         for line in lines {
@@ -38,7 +39,8 @@ fn main() {
                         Rule::instruction => (),
                    }
 
-                   update_position_part1(&mut x, &mut y, direction, amount);
+                //    update_position_part1(&mut x, &mut y, direction, amount);
+                   update_position_part2(&mut x, &mut y, &mut aim, direction, amount);
                    println!("x: {}, y: {}", x, y);
                 }
             }
@@ -48,15 +50,29 @@ fn main() {
     println!("{}", x * y);
 }
 
+fn update_position_part2(x: &mut i32, y: &mut i32, aim: &mut i32, direction: &str, amount: i32)
+{
+    match direction {
+        "forward" => {
+            *x += amount;
+            *y += amount * *aim;
+        },
+        "up" => {
+            *aim -= amount;
+        },
+        "down" => {
+            *aim += amount;
+        }
+        _ => { unreachable!(); }
+    }
+}
+
 fn update_position_part1(x: &mut i32, y: &mut i32, direction: &str, amount: i32)
 {
     println!("x: {}, y: {}, direction: {}, amount: {}", x, y, direction, amount);
     match direction {
         "forward" => {
             *x += amount;
-        },
-        "backward" => {
-            *x -= amount;
         },
         "up" => {
             *y -= amount;
