@@ -1,0 +1,4 @@
+direction = {"forward" | "backward" | "up" | "down" }
+value = { ASCII_DIGIT+ }
+instruction = {direction ~ value }
+WHITESPACE = { " " }

@@ -48,16 +48,6 @@ fn part1(values: &Vec<i32>) -> i32
     total - 1
 }
 
-// fn read_lines_to_vec<P>(filename: P) -> std::io::Result<Vec<i32>>
-// where P: AsRef<Path>, {
-//     let file = File::open(filename)?;
-
-//     let mut data = Vec::new();
-//     file.read_to_end(&mut data);
-
-//     return Ok(data);
-// }
-
 fn read_lines<P>(filename: P) -> io::Result<io::Lines<io::BufReader<File>>>
 where P: AsRef<Path>, {
     let file = File::open(filename)?;

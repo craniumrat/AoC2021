@@ -4,3 +4,4 @@ Debug/
 Rust/day1/Cargo.lock
 target/
 launch.json
+*.lock
