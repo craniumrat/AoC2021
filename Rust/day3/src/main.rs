@@ -24,17 +24,25 @@ fn main() {
 
         println!("{:?}", counts);
 
-        let mut output = 0;
+        let mut gamma = 0;
+        let mut epsilon = 0;
 
         for i in 0..length {
-            println!("Counts[i]: {}, i: {}, output: {}", counts[i], i, output);
+            println!("Counts[i]: {}, i: {}, output: {}", counts[i], i, gamma);
             if counts[i] >= values_count / 2 {
                 println!("2 ^ {}", (length - i - 1));
-                output += i32::pow(2, (length - i - 1).try_into().unwrap());
+                gamma += i32::pow(2, (length - i - 1).try_into().unwrap());
+            }
+            else
+            {
+                println!("2 ^ {}", (length - i - 1));
+                epsilon += i32::pow(2, (length - i - 1).try_into().unwrap());
             }
         }
 
-        print!("Output: {}", output);
+        println!("Gamma: {}", gamma);
+        println!("Epsilon: {}", epsilon);
+        println!("Solution: {}", gamma * epsilon);
     }
 }
 
