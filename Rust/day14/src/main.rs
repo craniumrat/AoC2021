@@ -16,7 +16,16 @@ fn main() {
     }
 
     let output = output_value(output_str.as_str());
-    println!("{}", output);
+    println!("Part 1: {}", output);
+
+    // So naive!
+    // for i in 0..40 {
+    //     println!("{}", i);
+    //     output_str = step(output_str.as_str(), &graph);
+    // }
+
+    // let output = output_value(output_str.as_str());
+    // println!("Part 2: {}", output);
 }
 
 fn make_graph() -> HashMap<String, char> {
