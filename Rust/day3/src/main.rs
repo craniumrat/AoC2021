@@ -31,13 +31,13 @@ fn part2(values: &Vec<Vec<char>>) -> i32
 fn filter(values: &Vec<Vec<char>>, position: usize, value: char) -> Vec<Vec<char>>
 {
     let mut new_values = vec!(vec!());
+    println!("{:?}", values);
     let filtered = values.iter().filter(|&cs| { println!("{:?}", cs); cs[position] == value });
     for f in filtered {
-        let new_f = f.clone();
-        new_values.push(new_f);
+        println!("{:?}", f);
+        new_values.push(f.to_vec());
     }
 
-    println!("New values[0]: {:?}", new_values[0]);
     new_values
 }
 
