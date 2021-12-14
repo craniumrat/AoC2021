@@ -8,7 +8,15 @@ const TEST_START: &str = "NNCB";
 const START: &str = "OHFNNCKCVOBHSSHONBNF";
 
 fn main() {
-    println!("Hello, world!");
+    let graph = make_graph();
+    let mut output_str = String::from(START);
+
+    for _ in 0..10 {
+        output_str = step(output_str.as_str(), &graph);
+    }
+
+    let output = output_value(output_str.as_str());
+    println!("{}", output);
 }
 
 fn make_graph() -> HashMap<String, char> {
@@ -59,7 +67,7 @@ fn output_value(input: &str) -> i32 {
     let mut minimum = i32::MAX;
     let mut maximum = 0;
 
-    for (key, value) in counts.iter() {
+    for (_, value) in counts.iter() {
         if *value > maximum {
             maximum = *value;
         }
@@ -121,5 +129,40 @@ fn test_steps() {
 
 #[test]
 fn test_output_value() {
-    unimplemented!();
+    let output = output_value("AAABB");
+    assert_eq!(output, 1);
+}
+
+#[test]
+fn test_example() {
+
+    let mut output = String::from(TEST_START);
+
+    let mut graph = HashMap::new();
+    graph.insert(String::from("CH"), 'B');
+    graph.insert(String::from("HH"), 'N');
+    graph.insert(String::from("CB"), 'H');
+    graph.insert(String::from("NH"), 'C');
+    graph.insert(String::from("HB"), 'C');
+    graph.insert(String::from("HC"), 'B');
+    graph.insert(String::from("HN"), 'C');
+    graph.insert(String::from("NN"), 'C');
+    graph.insert(String::from("BH"), 'H');
+    graph.insert(String::from("NC"), 'B');
+    graph.insert(String::from("NB"), 'B');
+    graph.insert(String::from("BN"), 'B');
+    graph.insert(String::from("BB"), 'N');
+    graph.insert(String::from("BC"), 'B');
+    graph.insert(String::from("CC"), 'N');
+    graph.insert(String::from("CN"), 'C');
+
+    for _ in 0..10 {
+        output = step(output.as_str(), &graph);
+        println!("{:?}", output);
+    }
+
+    assert_eq!(output.len(), 3073);
+    let output_val = output_value(output.as_str());
+
+    assert_eq!(output_val, 1588);
 }
