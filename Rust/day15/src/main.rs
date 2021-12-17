@@ -151,7 +151,7 @@ fn test_make_graph() {
 #[test]
 fn test_make_large_grid() {
     let base = make_grid();
-    let grid = make_large_grid(base);
+    let grid = make_large_grid(&base);
 
     println!("{:?}", grid);
 
