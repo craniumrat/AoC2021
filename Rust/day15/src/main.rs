@@ -131,8 +131,6 @@ fn test_make_graph() {
     let grid = make_grid();
     let graph = make_graph(&grid);
 
-    let size_u32: u32 = grid.len().try_into().unwrap();
-
     assert_eq!(graph.node_count(), grid.len() * grid.len());
 
     // for v in graph.node_indices() {
