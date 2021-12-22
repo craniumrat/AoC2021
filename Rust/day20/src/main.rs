@@ -12,10 +12,30 @@ fn main() {
 
     // println!("{}", count_lit_pixels(&image));
 
-    image = enhance(&image, &map);
-    image = enhance(&image, &map);
-    println!("{}", to_string(&image));
-    println!("{}", count_lit_pixels(&image));
+    /* NOTE: We messed up because the 0th value in HEX_STRING is '#'. 
+    * That means for every element in the infinite page outside our input, all values
+    * map to '[[000][000][000]]', the corresponding value in HEX_STRING will replace
+    * all values to 1. So the entire infinite page will be all #'s. (We cannot get a non-infinite count)
+    * In the next enhance, all elements outside input will be [[111][111][111]], which will 
+    * correspond to the 511th value in HEX_STRING which is '.'. So all those infinte '#'s will
+    * revert back to 0.
+    *
+    * We can solve this by passing a default value for the enhance function to indicate what values 
+    * to fill in by default.
+    */
+    let mut default = false;
+
+    for _ in 0..2 {
+        image = enhance(&image, &map, &mut default);
+    }    
+
+    println!("Part 1: {}", count_lit_pixels(&image));
+
+    for _ in 0..48 {
+        image = enhance(&image, &map, &mut default);
+    }
+
+    println!("Part 2: {}", count_lit_pixels(&image));
 }
 
 fn count_lit_pixels(image: &Vec<Vec<bool>>) -> i32 {
@@ -28,7 +48,7 @@ fn count_lit_pixels(image: &Vec<Vec<bool>>) -> i32 {
     count
 }
 
-fn enhance(input: &Vec<Vec<bool>>, map: &HashMap<usize, bool>) -> Vec<Vec<bool>> {
+fn enhance(input: &Vec<Vec<bool>>, map: &HashMap<usize, bool>, default: &mut bool) -> Vec<Vec<bool>> {
     //Since the original image is infinite going in all directions, 
     //pixels two to the left and top and pixels two to the right and bottom will
     //be affected by the enchance function. We should consider those also.
@@ -46,14 +66,14 @@ fn enhance(input: &Vec<Vec<bool>>, map: &HashMap<usize, bool>) -> Vec<Vec<bool>>
             if i > 1 && j > 1 {
                 array.push(input[i - 2][j - 2]);
             } else {
-                array.push(false);
+                array.push(*default);
             }
 
             //(i - 1, j)
             if i > 1 && j > 0 && j < input.len() + 1 {
                 array.push(input[i - 2][j - 1]);
             } else {
-                array.push(false);
+                array.push(*default);
             }
 
             //(i - 1, j + 1)
@@ -61,7 +81,7 @@ fn enhance(input: &Vec<Vec<bool>>, map: &HashMap<usize, bool>) -> Vec<Vec<bool>>
                 // println!("For (i - 1, j + 1): ({}, {})", i, j);
                 array.push(input[i - 2][j]);
             } else {
-                array.push(false);
+                array.push(*default);
             }
 
             //(i, j - 1)
@@ -69,14 +89,14 @@ fn enhance(input: &Vec<Vec<bool>>, map: &HashMap<usize, bool>) -> Vec<Vec<bool>>
                 // println!("For (i, j - 1): ({}, {})", i, j);
                 array.push(input[i - 1][j - 2]);
             } else {
-                array.push(false);
+                array.push(*default);
             }
 
             //(i, j)
             if i > 0 && i < input.len() + 1 && j > 0 && j < input.len() + 1 {
                 array.push(input[i - 1][j - 1]);
             } else {
-                array.push(false);
+                array.push(*default);
             }
 
             //(i, j + 1)
@@ -84,28 +104,28 @@ fn enhance(input: &Vec<Vec<bool>>, map: &HashMap<usize, bool>) -> Vec<Vec<bool>>
                 // println!("For (i, j + 1): ({}, {})", i, j);
                 array.push(input[i - 1][j]);
             } else {
-                array.push(false);
+                array.push(*default);
             }
 
             //(i + 1, j - 1)
             if i < input.len() && j > 1 {
                 array.push(input[i][j - 2]);
             } else {
-                array.push(false);
+                array.push(*default);
             }
 
             //(i + 1, j)
             if i < input.len() && j > 0 && j < input.len() + 1 {
                 array.push(input[i][j - 1]);
             } else {
-                array.push(false);
+                array.push(*default);
             }
 
             //(i + 1, j + 1)
             if i < input.len() && j < input.len() {
                 array.push(input[i][j]);
             } else {
-                array.push(false);
+                array.push(*default);
             }
 
             let value = convert(&array, &map);
@@ -114,6 +134,11 @@ fn enhance(input: &Vec<Vec<bool>>, map: &HashMap<usize, bool>) -> Vec<Vec<bool>>
 
         output.push(output_row);
     }
+
+    let current_default = *default;
+    let default_vector = vec!(current_default; 9);
+
+    *default = convert(&default_vector, &map);
 
     output
 }
