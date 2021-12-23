@@ -1,12 +1,6 @@
 {
 	"folders": [
 		{
-			"path": "day1"
-		},
-		{
-			"path": "day2"
-		},
-		{
 			"path": "day3"
 		},
 		{
@@ -17,9 +11,6 @@
 		},
 		{
 			"path": "day17"
-		},
-		{
-			"path": "day20"
 		}
 	],
 	"settings": {}
