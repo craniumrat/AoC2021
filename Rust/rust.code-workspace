@@ -4,13 +4,13 @@
 			"path": "day3"
 		},
 		{
-			"path": "day14"
-		},
-		{
 			"path": "day15"
 		},
 		{
 			"path": "day17"
+		},
+		{
+			"path": "day24"
 		}
 	],
 	"settings": {}
