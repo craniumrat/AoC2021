@@ -34,18 +34,19 @@ fn main() {
         }
     }
 
-    let mut inputs = vec![String::from("1"), String::from("2")];
+    let mut inputs = vec![String::from("9"); 14];
 
     for _i in options {
         let mut registers = registers_default;
         for (offset, input_instruction) in input_instruction_steps.iter().enumerate() {
-            if offset >= 35 {
-                println!("Instruction: {}, Registers: {:?}", input_instruction, registers);
-                break;
-            }
-            else {
+            // if offset >= 35 {
+            //     println!("Instruction: {}, Registers: {:?}", input_instruction, registers);
+            //     break;
+            // }
+            // else {
+                println!("{}: {}. {:?}", offset, input_instruction, registers);
                 (registers, inputs) = parse_instruction(&registers, input_instruction.to_string(), &inputs);
-            }
+            // }
         }
     }
 }
@@ -194,7 +195,7 @@ fn test_sample_instructions() {
                                         "mod w 2"];
 
     let mut registers = Register{ register_w: 0, register_x: 0, register_y: 0, register_z: 0 };
-    let mut inputs = vec![String::from("15")];
+    let mut inputs = vec![String::from("15"), String::from("2")];
 
     for i in input_instrutions.iter() {
         (registers, inputs) = parse_instruction(&registers, i.to_string(), &inputs);
@@ -205,6 +206,8 @@ fn test_sample_instructions() {
     assert_eq!(registers.register_x, 1);
     assert_eq!(registers.register_y, 1);
     assert_eq!(registers.register_z, 1);
+
+    assert_eq!(inputs, vec!(String::from("2")));
 
     registers = Register{ register_w: 0, register_x: 0, register_y: 0, register_z: 0 };
     inputs = vec![String::from("10")];
