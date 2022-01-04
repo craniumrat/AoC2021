@@ -8,7 +8,7 @@ fn main() {
     if let Ok(lines) = read_lines("test.txt") {
         let values: Vec<Vec<char>> = lines.map(|line| line.unwrap().chars().collect()).collect();
 
-        //part1(&values);
+        part1(&values);
         part2(&values);
 
     }
@@ -19,33 +19,31 @@ fn part2(values: &Vec<Vec<char>>) -> i32
     let length = values[0].len();
 
     let (ones, zeroes) = partition(values, 0, '1');
-    let (mut oxygen_start, mut co2_start) = if ones.len() >= zeroes.len() { (ones, zeroes) } else { (zeroes, ones) };
+    let (mut oxygen_generator, mut co2_scrubber) = if ones.len() >= zeroes.len() { (ones, zeroes) } else { (zeroes, ones) };
 
     for position in 1..length {
-        if oxygen_start.len() == 1 {
+        if oxygen_generator.len() == 1 {
             break;
         }
 
-        let(ones, zeroes) = partition(&oxygen_start, position, '1');
-        oxygen_start = if ones.len() >= zeroes.len() { ones } else { zeroes } ;
+        let(ones, zeroes) = partition(&oxygen_generator, position, '1');
+        oxygen_generator = if ones.len() >= zeroes.len() { ones } else { zeroes } ;
     }
 
     for position in 1..length {
-        if co2_start.len() == 1 {
+        if co2_scrubber.len() == 1 {
             break;
         }
 
-        let(ones, zeroes) = partition(&co2_start, position, '1');
-        co2_start = if ones.len() >= zeroes.len() { zeroes } else { ones } ;
+        let(ones, zeroes) = partition(&co2_scrubber, position, '1');
+        co2_scrubber = if ones.len() >= zeroes.len() { zeroes } else { ones } ;
     }
 
-    let o2 = binary_str_to_int(oxygen_start[0].iter().collect::<String>().as_str());
-    let co2 = binary_str_to_int(co2_start[0].iter().collect::<String>().as_str());
+    let o2 = binary_str_to_int(oxygen_generator[0].iter().collect::<String>().as_str());
+    let co2 = binary_str_to_int(co2_scrubber[0].iter().collect::<String>().as_str());
     
-    dbg!(o2);
-    dbg!(co2);
-
-    0
+    println!("Part 2: {}", o2 * co2);
+    o2 * co2
 }
 
 fn partition(values: &Vec<Vec<char>>, position: usize, value: char) -> (Vec<Vec<char>>, Vec<Vec<char>>)
@@ -120,7 +118,7 @@ fn part1(values: &Vec<Vec<char>>) -> i32
 
     println!("Gamma: {}", gamma);
     println!("Epsilon: {}", epsilon);
-    println!("Solution: {}", gamma * epsilon);
+    println!("Par 1: {}", gamma * epsilon);
     gamma * epsilon
 }
 
