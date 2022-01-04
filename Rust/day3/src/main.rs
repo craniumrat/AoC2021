@@ -1,13 +1,14 @@
 use std::fs::File;
 use std::io::{self, BufRead};
 use std::path::Path;
+use std::vec;
 
 
 fn main() {
     if let Ok(lines) = read_lines("test.txt") {
         let values: Vec<Vec<char>> = lines.map(|line| line.unwrap().chars().collect()).collect();
 
-        part1(&values);
+        //part1(&values);
         part2(&values);
 
     }
@@ -15,30 +16,54 @@ fn main() {
 
 fn part2(values: &Vec<Vec<char>>) -> i32
 {
-    let mut filtered = filter(values, 0, '1');
-    let mut i = 0;
-    println!("Filtered count: {}", filtered.len());
-    // while filtered.len() > 1 {
-        i += 1;
-        println!("Filtered count: {}, i: {}", filtered.len(), i);
-        filtered = filter(&filtered, i, '1');
-        println!("Filtered count: {}, i: {}", filtered.len(), i);
-    // }
+    let length = values[0].len();
+
+    let (ones, zeroes) = partition(values, 0, '1');
+    let (mut oxygen_start, mut co2_start) = if ones.len() >= zeroes.len() { (ones, zeroes) } else { (zeroes, ones) };
+
+    for position in 1..length {
+        if oxygen_start.len() == 1 {
+            break;
+        }
+
+        let(ones, zeroes) = partition(&oxygen_start, position, '1');
+        oxygen_start = if ones.len() >= zeroes.len() { ones } else { zeroes } ;
+    }
+
+    for position in 1..length {
+        if co2_start.len() == 1 {
+            break;
+        }
+
+        let(ones, zeroes) = partition(&co2_start, position, '1');
+        co2_start = if ones.len() >= zeroes.len() { zeroes } else { ones } ;
+    }
+
+    let o2 = binary_str_to_int(oxygen_start[0].iter().collect::<String>().as_str());
+    let co2 = binary_str_to_int(co2_start[0].iter().collect::<String>().as_str());
+    
+    dbg!(o2);
+    dbg!(co2);
 
     0
 }
 
-fn filter(values: &Vec<Vec<char>>, position: usize, value: char) -> Vec<Vec<char>>
+fn partition(values: &Vec<Vec<char>>, position: usize, value: char) -> (Vec<Vec<char>>, Vec<Vec<char>>)
 {
-    let mut new_values = vec!(vec!());
-    println!("{:?}", values);
-    let filtered = values.iter().filter(|&cs| { println!("{:?}", cs); cs[position] == value });
-    for f in filtered {
-        println!("{:?}", f);
-        new_values.push(f.to_vec());
+    let mut trues: Vec<Vec<char>> = vec!();
+    let mut falses: Vec<Vec<char>> = vec!();
+    
+    // println!("{:?}", values);
+    // let filtered = values.iter().filter(|&cs| { println!("{:?}", cs); cs[position] == value });
+    for v in values {
+        if v[position] == value {
+            trues.push(v.to_vec());
+        } else {
+            falses.push(v.to_vec());
+        }
     }
 
-    new_values
+    (trues, falses)
 }
 
 fn binary_str_to_int(s: &str) -> i32
